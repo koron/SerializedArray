@@ -1,10 +1,12 @@
 package net.kaoriya.qb.serialized_array;
 
+import java.nio.ByteBuffer;
+
 public interface BytesStore
 {
-    int add(byte[] b);
+    int add(ByteBuffer b);
 
-    byte[] get(int index);
+    ByteBuffer get(int index);
 
     void clearAll();
 }

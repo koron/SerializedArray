@@ -8,12 +8,6 @@ public class SerializedArray<T>
 
     private int size = 0;
 
-    protected abstract void addBytes(byte[] b);
-
-    protected abstract byte[] getBytes(int index);
-
-    protected abstract void clearAllBytes();
-
     public SerializedArray(Converter<T> converter, BytesStore bytesStore)
     {
         this.converter = converter;

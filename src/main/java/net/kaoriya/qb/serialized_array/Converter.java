@@ -1,8 +1,10 @@
 package net.kaoriya.qb.serialized_array;
 
+import java.nio.ByteBuffer;
+
 public interface Converter<T>
 {
-    byte[] toBytes(T src);
+    ByteBuffer toBytes(T src);
 
-    T fromBytes(byte[] b);
+    T fromBytes(ByteBuffer b);
 }
