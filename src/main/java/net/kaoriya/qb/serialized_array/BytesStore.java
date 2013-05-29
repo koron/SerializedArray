@@ -1,12 +1,18 @@
 package net.kaoriya.qb.serialized_array;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public interface BytesStore
 {
-    int add(ByteBuffer b);
+    OutputStream addBegin() throws IOException;
 
-    ByteBuffer get(int index);
+    void addEnd(OutputStream stream) throws IOException;
+
+    InputStream getBegin(int index) throws IOException;
+
+    void getEnd(InputStream stream);
 
     void clearAll();
 }

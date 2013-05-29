@@ -1,5 +1,9 @@
 package net.kaoriya.qb.serialized_array;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class SerializedArray<T>
 {
     private Converter<T> converter;
@@ -14,18 +18,30 @@ public class SerializedArray<T>
         this.bytesStore = bytesStore;
     }
 
-    public final void add(T value)
+    public final void add(T value) throws IOException
     {
-        this.bytesStore.add(this.converter.toBytes(value));
-        this.size += 1;
+        OutputStream stream = null;
+        try {
+            stream = this.bytesStore.addBegin();
+            this.converter.writeObject(stream, value);
+            this.size += 1;
+        } finally {
+            if (stream != null) { this.bytesStore.addEnd(stream); }
+        }
     }
 
-    public final T get(int index)
+    public final T get(int index) throws IOException
     {
         if (index < 0 || index >= this.size) {
             throw new IndexOutOfBoundsException("#get: " + index);
         }
-        return this.converter.fromBytes(this.bytesStore.get(index));
+        InputStream stream = null;
+        try {
+            stream = this.bytesStore.getBegin(index);
+            return this.converter.readObject(stream);
+        } finally {
+            if (stream != null) { this.bytesStore.getEnd(stream); }
+        }
     }
 
     public final int getSize()
