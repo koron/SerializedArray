@@ -12,7 +12,7 @@ public interface BytesStore
 
     InputStream getBegin(int index) throws IOException;
 
-    void getEnd(InputStream stream);
+    void getEnd(InputStream stream) throws IOException;
 
     void clearAll();
 }

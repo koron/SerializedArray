@@ -22,7 +22,7 @@ class IntIndexTable
         return this.list.get(this.list.size() - 1);
     }
 
-    int getIndex(int index)
+    int getOffset(int index)
     {
         return this.list.get(index);
     }

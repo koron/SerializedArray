@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 
 public final class SerializableConverter<T extends Serializable>
+    implements Converter<T>
 {
     public void writeObject(OutputStream dest, T src) throws IOException
     {
