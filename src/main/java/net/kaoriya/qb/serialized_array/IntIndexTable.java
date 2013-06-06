@@ -1,6 +1,7 @@
 package net.kaoriya.qb.serialized_array;
 
 import java.util.ArrayList;
+import java.util.List;
 
 // FIXME: more efficient implementation.
 class IntIndexTable
@@ -30,5 +31,15 @@ class IntIndexTable
     int getLength(int index)
     {
         return this.list.get(index + 1) - this.list.get(index);
+    }
+
+    List<Integer> getList()
+    {
+        return this.list;
+    }
+
+    int getSize()
+    {
+        return this.list.size();
     }
 }

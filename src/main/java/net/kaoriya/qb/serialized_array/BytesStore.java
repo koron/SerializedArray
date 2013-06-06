@@ -15,4 +15,6 @@ public interface BytesStore
     void getEnd(InputStream stream) throws IOException;
 
     void clearAll();
+
+    int getSize();
 }

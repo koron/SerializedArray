@@ -92,4 +92,19 @@ public final class MemoryStore implements BytesStore
             this.lastOutputStream = null;
         }
     }
+
+    BytesStream getBytesStream()
+    {
+        return this.bytesStream;
+    }
+
+    IntIndexTable getIntIndexTable()
+    {
+        return this.indexTable;
+    }
+
+    public int getSize()
+    {
+        return this.indexTable.getSize() - 1;
+    }
 }

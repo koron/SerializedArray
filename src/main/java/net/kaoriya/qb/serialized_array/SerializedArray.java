@@ -16,6 +16,7 @@ public class SerializedArray<T>
     {
         this.converter = converter;
         this.bytesStore = bytesStore;
+        this.size = bytesStore.getSize();
     }
 
     public final void add(T value) throws IOException
@@ -53,5 +54,15 @@ public class SerializedArray<T>
     {
         this.bytesStore.clearAll();
         this.size = 0;
+    }
+
+    protected Converter<T> getConverter()
+    {
+        return this.converter;
+    }
+
+    protected BytesStore getBytesStore()
+    {
+        return this.bytesStore;
     }
 }
