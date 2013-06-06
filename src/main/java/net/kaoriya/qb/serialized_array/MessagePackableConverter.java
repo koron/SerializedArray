@@ -10,6 +10,7 @@ import org.msgpack.packer.Packer;
 import org.msgpack.unpacker.Unpacker;
 
 public final class MessagePackableConverter<T extends MessagePackable>
+    implements Converter<T>
 {
     private final MessagePack messagePack = new MessagePack();
 
