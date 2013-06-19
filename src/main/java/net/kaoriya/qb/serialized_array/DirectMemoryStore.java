@@ -1,13 +1,22 @@
 package net.kaoriya.qb.serialized_array;
 
 import java.io.ByteArrayInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-public final class DirectMemoryStore implements BytesStore
+import sun.misc.Cleaner;
+import sun.nio.ch.DirectBuffer;
+
+/**
+ * Off-heap memory store.
+ *
+ * To free off-heap memory immediately, call #close().
+ */
+public final class DirectMemoryStore implements BytesStore, Closeable
 {
     private ByteBuffer byteBuffer;
 
@@ -55,12 +64,28 @@ public final class DirectMemoryStore implements BytesStore
 
     public void clearAll()
     {
-        this.byteBuffer = null;
-        this.indexes = null;
+        close();
     }
 
     public int getSize()
     {
         return this.indexes.length - 1;
+    }
+
+    public void close()
+    {
+        free(this.byteBuffer);
+        this.byteBuffer = null;
+        this.indexes = null;
+    }
+
+    private static void free(ByteBuffer buf)
+    {
+        if (buf instanceof DirectBuffer) {
+            Cleaner cleaner = ((DirectBuffer)buf).cleaner();
+            if (cleaner != null) {
+                cleaner.clean();
+            }
+        }
     }
 }
