@@ -11,8 +11,6 @@ public class SerializedArrayTest
     class MemorySeriarizableArray<T extends Serializable>
             extends SerializedArray<T>
     {
-        private MemoryStore memoryStore;
-
         MemorySeriarizableArray()
         {
             super(new SerializableConverter<T>(), new MemoryStore());
