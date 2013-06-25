@@ -1,7 +1,5 @@
 package net.kaoriya.qb.serialized_array;
 
-import java.io.Serializable;
-
 import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
