@@ -1,10 +1,11 @@
 package net.kaoriya.qb.serialized_array;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class SerializedArray<T>
+public class SerializedArray<T> implements Closeable
 {
     private Converter<T> converter;
 
@@ -64,5 +65,10 @@ public class SerializedArray<T>
     protected BytesStore getBytesStore()
     {
         return this.bytesStore;
+    }
+
+    public void close()
+    {
+        this.bytesStore = null;
     }
 }
