@@ -20,8 +20,8 @@ Serialized Array の利用法は大まかに以下のとおりです。
 
 1.  HeapArray を作成する
 2.  HeapArrayに要素を追加する
-3.  OffHeapArray を構築する
-4.  OffHeapArray から取り出す(追加はできない)
+3.  (HeapArray から) OffHeapArray を構築する
+4.  OffHeapArray から取り出す (追加はできない)
 5.  (使用が終わったら) OffHeapArray を破棄する
 
 以下のコードはもっとも簡単な、文字列を取り扱うサンプルです。
@@ -31,6 +31,7 @@ HeapArray<String> array = new HeapArray(new SerializableConverter<String>());
 
 // TODO: arrray.add(String) で必要なだけ要素を追加する
 
+// HeapArray から OffHeapArray を構築する
 OffHeapArray<String> offheap = new OffHeapArray(array);
 
 // String str = offheap.get(int) で要素を取り出す
