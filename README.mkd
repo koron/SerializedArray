@@ -1,3 +1,84 @@
 # Serialized Array
 
-    $ mvn compile
+Serialized Array は GC を生き残るオブジェクト数とサイズを削減し、後述のパフォーマンス低下を避ける目的の、配列の代替クラス・モジュールです。
+
+Java において配列にたくさんの要素(インスタンス)を格納するとそれだけでパフォーマンスの低下を引き起こします。このパフォーマンスの低下は GC を生き残ったオブジェクトの数とサイズが大きくなるほど GC にかかる時間が長くなることに起因します。Serialized Arrayでは全要素をシリアライズしてそれを off-heap 領域に置くことでこの問題に対処します。
+
+Serialized Array では構築と取り出しに配列へ格納したケースよりも余分な時間がかかります。しかし恒常的・突発的に発生する GC の時間を短くすることで、トータルでのパフォーマンスが向上するケースをサポートします。あらゆるケースに対応できるわけではないことに注意してください。
+
+## How to build
+
+    $ gradle build
+
+Ouput: `build/libs/serialized_array-X.X.jar`
+
+pom.xml is obsoleted.
+
+## Coding guide
+
+Serialized Array の利用法は大まかに以下のとおりです。
+
+1.  HeapArray を作成する
+2.  HeapArrayに要素を追加する
+3.  OffHeapArray を構築する
+4.  OffHeapArray から取り出す(追加はできない)
+5.  (使用が終わったら) OffHeapArray を破棄する
+
+以下のコードはもっとも簡単な、文字列を取り扱うサンプルです。
+
+```java
+HeapArray<String> array = new HeapArray(new SerializableConverter<String>());
+
+// TODO: arrray.add(String) で必要なだけ要素を追加する
+
+OffHeapArray<String> offheap = new OffHeapArray(array);
+
+// String str = offheap.get(int) で要素を取り出す
+
+// 使い終わった OffHeapArray は破棄する
+offheap.close()
+```
+
+HeapArray を作成する時には Converter が必要です。独自の Converter を実装することもできますが、予め以下の2種類の Converter が実装されています。
+
+種類                     | 説明
+-------------------------|------
+SerializableConverter    | java.io.Serializable を実装したクラスを変換できる Converter。比較的手軽に利用できるが、速度やメモリ効率はあまり良くない。
+MessagePackableConverter | org.msgpack.MessagePackable を実装したクラスを変換できる Converter。実装の手間はあるが、速度やメモリ効率は比較的良くできる。
+
+以下のコードは MessagePackableConverter を使うサンプルです。
+
+```java
+public class Value implements MessagePackable {
+    private String stringProperty;
+    public Value() { } // 引数なしコンストラクタが必須
+    public Value(String stringValue) {
+        this.stringProperty = stringValue;
+    }
+    public String getStringProperty() {
+        return this.stringProperty;
+    }
+    public void setStringProperty(String value) {
+        this.stringProperty = value;
+    }
+
+    // MessagePackable インターフェースの実装
+
+    public void readFrom(Unpacker unpacker) throws IOException {
+        this.stringProperty = unpacker.readString();
+    }
+    public void writeTo(Packer packer) throws IOException {
+        packer.write(this.stringProperty);
+    }
+}
+
+// MessagePackableConverter を利用していることをに注意
+HeapArray<Value> array = new HeapArray(
+        new MessagePackableConverter<Value>(Value.class));
+
+// 以下略
+```
+
+## ベンチマーク
+
+Serialized Arrary を用いている [koron/ipv4\_binsearch](https://github.com/koron/ipv4_binsearch#%E3%83%99%E3%83%B3%E3%83%81%E3%83%9E%E3%83%BC%E3%82%AF) を参照してください。
